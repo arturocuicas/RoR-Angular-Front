@@ -1,0 +1,136 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6" >
+        <h3>{{ title }}</h3>
+      </div>
+
+      <div class="col-md-6" >
+        <div class="form-group">
+          <input type="text" class="form-control"
+          [(ngModel)]='name' placeholder="Nombre"/>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="table-responsive" style="min-height:390px">
+      <!-- <app-spinner *ngIf="showSpinner1"></app-spinner> -->
+      <ng-container *ngIf="!showSpinner1">
+        <table class="table table-bordered table-striped table-hover">
+          <thead class="header-table thead-dark">
+            <tr style="text-align: center">
+              <th class="pointer" (click)="sort('familyGoal')">
+                  Familia de Metas <i class="fa"
+                  [ngClass]="{'fa-sort': column != 'familyGoal',
+                  'fa-sort-asc': (column == 'familyGoal' && !isDesc),
+                  'fa-sort-desc': (column == 'familyGoal' && isDesc) }"
+                  aria-hidden="true"></i>
+              </th>
+              <th class="pointer" (click)="sort('name')">Nombre <i class="fa"
+                  [ngClass]="{'fa-sort': column != 'name',
+                  'fa-sort-asc': (column == 'name' && !isDesc),
+                  'fa-sort-desc': (column == 'name' && isDesc) }"
+                  aria-hidden="true"></i>
+              </th>
+              <th class="pointer" (click)="sort('position')">Cargo <i class="fa"
+                  [ngClass]="{'fa-sort': column != 'position',
+                  'fa-sort-asc': (column == 'position' && !isDesc),
+                  'fa-sort-desc': (column == 'position' && isDesc) }"
+                  aria-hidden="true"></i>
+              </th>
+              <th class="pointer" (click)="sort('area')">Area <i class="fa"
+                  [ngClass]="{'fa-sort': column != 'area',
+                  'fa-sort-asc': (column == 'area' && !isDesc),
+                  'fa-sort-desc': (column == 'area' && isDesc) }"
+                  aria-hidden="true"></i>
+              </th>
+              <th class="pointer" (click)="sort('world')">Mundo <i class="fa"
+                  [ngClass]="{'fa-sort': column != 'world',
+                  'fa-sort-asc': (column == 'world' && !isDesc),
+                  'fa-sort-desc': (column == 'world' && isDesc) }"
+                  aria-hidden="true"></i>
+              </th>
+              <th>Action</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <ng-container *ngIf="items.length > 0">
+              <tr *ngFor="let item of items | filterByName :name
+                | sortByColumn: { property: column, direction: direction}">
+                <td>{{ item.family_id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.position }}</td>
+                <td>{{ item.area }}</td>
+                <td>{{ item.world }}</td>
+                <td>
+                  <div class="btn-group" role="group" aria-label="">
+                    <button type="button" class="btn btn-secondary"
+                      (click)="openModalEdit(Editar,item)">
+                      <i class="fa fa-eye" aria-hidden="true"></i> Ver
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                      (click)="openModalConfirm(modalConfirm,item)">
+                      <i class="fa fa-trash" aria-hidden="true"></i> Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="!items.length > 0">
+              <tr class="text-center">
+                <td colspan="6">
+                  Aun no hay usuarios creados, puede crearlos
+                  <a [routerLink]="['/users/new']"> Aqui</a>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+
+        <ng-template #Editar>
+           <form  [formGroup]="editForm" (ngSubmit)="onSubmit()" >
+             <div class="modal-header">
+               <h4 class="modal-title pull-left">Editar Usuario</h4>
+               <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body">
+               <div class="form-group">
+                 <label for="name" class="sr-only"></label>
+               </div>
+               <div class="form-group">
+                 <label for="Description" class="sr-only">Description</label>
+                 <input type="text" formControlName="Description" class="form-control" placeholder="Description" />
+                 <div *ngIf="submitted && f.Description.errors" class="invalid-feedback">
+                   <div *ngIf="edit.Description.errors.required">Monto Requerido</div>
+                 </div>
+               </div>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-danger" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i> Cancelar</button>
+               <button *ngIf="editStatus" class="btn btn-primary" type="submit"><i class="fa fa-check" aria-hidden="true"></i> Guardar</button>
+               <button *ngIf="!editStatus" type="button" class="btn btn-primary" (click)="toggleForm()"><i class="fa fa-pencil" aria-hidden="true"></i>  Editar</button>
+             </div>
+           </form>
+         </ng-template>
+
+         <!-- Modal Confirmacion -->
+         <ng-template #modalConfirm>
+           <div class="modal-body text-center">
+             <p>Esta seguro que quiere eliminar el ...</p>
+             <div class="btn-group" role="group" aria-label="">
+               <button type="button" class="btn btn-secundary" (click)="confirm(id_to_delete)">Si</button>
+               <button type="button" class="btn btn-secundary" (click)="decline()">No</button>
+             </div>
+           </div>
+         </ng-template>
+       </ng-container>
+     </div>
+
+   </div>
+ </div>
