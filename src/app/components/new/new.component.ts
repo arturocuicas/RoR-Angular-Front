@@ -52,13 +52,7 @@ export class NewComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.newForm.value)
     this.submitted = true;
-
-    // if (this.newForm.invalid) {
-    //   return;
-    // }
-
     this.loading = true;
 
     this.userService.create(this.newForm.value)
@@ -66,7 +60,7 @@ export class NewComponent implements OnInit {
       .subscribe(
         data => {
           // this.alertService.success('Nuevo Usuario Registrado', true);
-          this.router.navigate(['/users/list']);
+          this.router.navigate(['/']);
         },
         error => {
           // this.alertService.error(error.error.text);

@@ -61,7 +61,7 @@
             <ng-container *ngIf="items.length > 0">
               <tr *ngFor="let item of items | filterByName :name
                 | sortByColumn: { property: column, direction: direction}">
-                <td>{{ item.family_id }}</td>
+                <td>{{ item.familyGoal }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.position }}</td>
                 <td>{{ item.area }}</td>
@@ -84,7 +84,7 @@
               <tr class="text-center">
                 <td colspan="6">
                   Aun no hay usuarios creados, puede crearlos
-                  <a [routerLink]="['/users/new']"> Aqui</a>
+                  <a [routerLink]="['/new']"> Aqui</a>
                 </td>
               </tr>
             </ng-container>
@@ -95,7 +95,8 @@
            <form  [formGroup]="editForm" (ngSubmit)="onSubmit()" >
              <div class="modal-header">
                <h4 class="modal-title pull-left">Editar Usuario</h4>
-               <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+               <button type="button" class="close pull-right" aria-label="Close"
+                (click)="closeModal()">
                  <span aria-hidden="true">&times;</span>
                </button>
              </div>
@@ -104,17 +105,64 @@
                  <label for="name" class="sr-only"></label>
                </div>
                <div class="form-group">
-                 <label for="Description" class="sr-only">Description</label>
-                 <input type="text" formControlName="Description" class="form-control" placeholder="Description" />
-                 <div *ngIf="submitted && f.Description.errors" class="invalid-feedback">
-                   <div *ngIf="edit.Description.errors.required">Monto Requerido</div>
+                 <label for="description">Nombre</label>
+                 <input type="text" formControlName="name" class="form-control"
+                   [ngClass]="{ 'is-invalid': submited && new.name.errors }" />
+                 <div *ngIf="submited && new.name.errors" class="invalid-feedback">
+                   <div *ngIf="new.name.errors.required">Nombre Requerido</div>
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="position">Cargo</label>
+                 <select class="custom-select" formControlName="position"
+                   [ngClass]="{ 'is-invalid': submited && new.position.errors }">
+                   <option *ngFor="let position of POSITIONS" [value]="position">
+                     {{ position }}
+                   </option>
+                 </select>
+                 <div *ngIf="submited && new.position.errors" class="invalid-feedback">
+                   <div *ngIf="new.position.errors.required">Cargo es Requerido</div>
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="area">Area</label>
+                 <select class="custom-select" formControlName="area"
+                   [ngClass]="{ 'is-invalid': submited && new.area.errors }">
+                   <option *ngFor="let area of AREAS" [value]="area">
+                     {{ area }}
+                   </option>
+                 </select>
+                 <div *ngIf="submited && new.area.errors" class="invalid-feedback">
+                   <div *ngIf="new.area.errors.required">Area es Requerida</div>
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="world">Mundo</label>
+                 <select class="custom-select" formControlName="world"
+                   [ngClass]="{ 'is-invalid': submited && new.world.errors }">
+                   <option *ngFor="let world of WORLDS" [value]="world">
+                     {{ world }}
+                   </option>
+                 </select>
+                 <div *ngIf="submited && new.world.errors" class="invalid-feedback">
+                   <div *ngIf="new.world.errors.required">Mundo es Requerido</div>
                  </div>
                </div>
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn btn-danger" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i> Cancelar</button>
-               <button *ngIf="editStatus" class="btn btn-primary" type="submit"><i class="fa fa-check" aria-hidden="true"></i> Guardar</button>
-               <button *ngIf="!editStatus" type="button" class="btn btn-primary" (click)="toggleForm()"><i class="fa fa-pencil" aria-hidden="true"></i>  Editar</button>
+               <button type="button" class="btn btn-danger" (click)="closeModal()">
+                 <i class="fa fa-times" aria-hidden="true"></i> Cancelar
+               </button>
+               <button *ngIf="editStatus" class="btn btn-primary" type="submit">
+                 <i class="fa fa-check" aria-hidden="true"></i> Guardar
+               </button>
+               <button *ngIf="!editStatus" type="button" class="btn btn-primary"
+                (click)="toggleForm()"><i class="fa fa-pencil" aria-hidden="true">
+                </i> Editar
+             </button>
              </div>
            </form>
          </ng-template>
@@ -122,11 +170,9 @@
          <!-- Modal Confirmacion -->
          <ng-template #modalConfirm>
            <div class="modal-body text-center">
-             <p>Esta seguro que quiere eliminar el ...</p>
-             <div class="btn-group" role="group" aria-label="">
-               <button type="button" class="btn btn-secundary" (click)="confirm(id_to_delete)">Si</button>
-               <button type="button" class="btn btn-secundary" (click)="decline()">No</button>
-             </div>
+             <p>Esta seguro que quiere eliminar el Usuario?</p>
+             <button type="button" class="btn btn-secundary" (click)="confirm(id_to_delete)">Si</button>
+             <button type="button" class="btn btn-secundary" (click)="decline()">No</button>
            </div>
          </ng-template>
        </ng-container>

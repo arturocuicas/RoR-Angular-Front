@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -26,28 +25,40 @@ export class HomeComponent implements OnInit {
   // Inicializamos las Variables
   title = 'Listado de usuarios Registrados';
 
-  items = (<any>Array);
-  users = (<any>Array);
+  items = [];
+  user = [];
+  familia= [];
+  data = (<any>Array);
   showSpinner1 = false;
 
   editForm: FormGroup;
+
+  // Modals
   modalEdit: BsModalRef;
   modalConfirm: BsModalRef;
 
   id_to_delete: string;
+  editStatus: boolean = false;
 
   public itemTemporal = (<any>Array);
-  public data = (<any>Array);
 
   public name;
-
-  editStatus: boolean = false;
 
   // Iniciamos el orden de las columnas por el nombre
   column: string = 'name';
   isDesc: boolean = true;
   direction: number;
 
+  // Posibles atributos para los usuarios
+  POSITIONS = [
+    'EJECUTIVO PERSONAS', 'AGENTE I', 'AGENTE I', 'AGENTE II',
+    'EJECUTIVO SELECT', 'GESTOR COMERCIAL SENIOR', 'EJECUTIVO PYME'
+  ];
+
+  AREAS = ['ZONA SUR', 'ZONA NORTE', 'ZONA CENTRO'];
+
+  WORLDS = ['SANTANDER', 'BANEFE', 'BANCO Y FILIALES'];
+  
   constructor(
     private formBuilder: FormBuilder,
     private modalService: BsModalService,
@@ -61,9 +72,33 @@ export class HomeComponent implements OnInit {
   private loadAllUsers() {
     this.userService.getAll()
       .pipe(first()).subscribe(data => {
-        this.users = data;
-        this.items = this.users.data;
-        console.log(this.items);
+        this.data = data;
+        // Extraemos los dos arreglos
+        this.user = this.data.user;
+        this.familia = this.data.familyGoal;
+        // Itermaos los Usuarios para armar el nuevo Obejto con la Familia
+        this.user.forEach((item) => {
+          let nameFamlily = this.familia.filter((family) => {
+            if (item.family_goal_id === family.id)  {
+              return true
+            }
+          });
+
+          // En caso de encontrar coincidencias coloar la etiqueta SIN FAMILIA
+          let Familia = nameFamlily.length > 0 ? nameFamlily[0].name : 'SIN FAMILIA';
+
+          // Armamos el nuevo objeto
+          let userFill = {
+            id: item.id,
+            familyGoal: Familia,
+            name: item.name,
+            position: item.position,
+            area: item.area,
+            world: item.world
+          }
+          this.items.push(userFill);
+        });
+
     });
   }
 
@@ -105,7 +140,7 @@ export class HomeComponent implements OnInit {
 
   //  Guardamos la Edicion
   onSubmit() {
-    console.log('Guardar');
+
     this.editStatus = false;
     this.editForm.disable();
     this.modalEdit.hide();
@@ -122,7 +157,6 @@ export class HomeComponent implements OnInit {
   confirm(id): void {
     this.showSpinner1 = true;
     this.modalConfirm.hide();
-    console.log(id);
     this.userService.delete(id)
       .pipe(first()).subscribe(() => {
         this.loadAllUsers();
