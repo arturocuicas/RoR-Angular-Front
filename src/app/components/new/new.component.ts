@@ -16,11 +16,13 @@ import { User } from '../../models/user';
 
 export class NewComponent implements OnInit {
 
+  // Inicializamos las Variables
   title = 'Nuevo Usuario';
   newForm: FormGroup;
   loading = false;
   submitted = false;
 
+  // Posibles atributos para los usuarios
   POSITIONS = [
     'EJECUTIVO PERSONAS', 'AGENTE I', 'AGENTE I', 'AGENTE II',
     'EJECUTIVO SELECT', 'GESTOR COMERCIAL SENIOR', 'EJECUTIVO PYME'
@@ -54,7 +56,6 @@ export class NewComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.loading = true;
-
     this.userService.create(this.newForm.value)
       .pipe(first())
       .subscribe(

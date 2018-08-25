@@ -62,7 +62,7 @@
               <tr *ngFor="let item of items | filterByName :name
                 | sortByColumn: { property: column, direction: direction}">
                 <td>{{ item.familyGoal }}</td>
-                <td>{{ item.name }}</td>
+                <td>{{ item.name | uppercase }}</td>
                 <td>{{ item.position }}</td>
                 <td>{{ item.area }}</td>
                 <td>{{ item.world }}</td>
